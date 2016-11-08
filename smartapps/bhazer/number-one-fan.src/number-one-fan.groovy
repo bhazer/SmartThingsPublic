@@ -33,9 +33,34 @@ def updated() {
 }
 
 def initialize() {
-	subscribe(theswitch, "switch.on", switchedOn)
+    state.mode = (theswitch.currentSwitch == "on") ? "manual" : "off"
+    state.offAt = -1
+
+    subscribe(theswitch, "switch.on", switchedOn)
 	subscribe(theswitch, "switch.off", switchedOff)
 	subscribe(theswitch, "button.pushed", pushed)
 }
 
-// TODO: implement event handlers
+def switchedOn(evt) {
+    if (state.mode == "off") {
+        state.mode = "timed"
+        state.offAt = now() + (60 * 1000 * time1)
+        runIn(60 * time1, timerElapsed)
+    }
+}
+
+def switchedOff(evt) {
+    state.mode = "off"
+    state.offAt = -1
+}
+
+def timerElapsed() {
+    if ((state.mode == "timed") && (now() > state.offAt)) {
+        state.mode = "off"
+        theswitch.off()
+    }
+}
+
+def pushed(evt) {
+    // TODO: implement
+}
