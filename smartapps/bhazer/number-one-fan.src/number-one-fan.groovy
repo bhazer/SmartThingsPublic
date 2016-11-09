@@ -16,6 +16,7 @@ preferences {
     section("Times") {
         input "time1", "number", title: "How long to stay on when switched on?", required: true
         input "time2", "number", title: "How long to stay on when double tapped?", required: true
+        input "time3", "number", title: "How long to stay on when triple tapped?", required: true
     }
 }
 
@@ -58,10 +59,16 @@ def pushed(evt) {
     def data = jsonSlurper.parseText(evt.data)
     log.debug "Button pushed: ${data}"
     switch (data.buttonNumber) {
-        // double tab up
+        // double tap up
         case "1":
             theswitch.on()
             startTimer(time2)
+            break
+
+        // triple tap up
+        case "3":
+            theswitch.on()
+            startTimer(time3)
             break
 
         // hold up
