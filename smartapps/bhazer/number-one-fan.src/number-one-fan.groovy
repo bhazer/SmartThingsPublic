@@ -54,7 +54,10 @@ def switchedOff(evt) {
 }
 
 def pushed(evt) {
-    switch (evt.data.buttonNumber) {
+	def jsonSlurper = new groovy.json.JsonSlurper()
+    def data = jsonSlurper.parseText(evt.data)
+    log.debug "Button pushed: ${data}"
+    switch (data.buttonNumber) {
         // double tab up
         case "1":
             theswitch.on()
