@@ -48,6 +48,7 @@ def switchedOn(evt) {
 }
 
 def switchedOff(evt) {
+    log.debug "Switched off manually"
     state.mode = "off"
     state.offAt = -1
 }
@@ -62,6 +63,7 @@ def pushed(evt) {
 
         // hold up
         case "5":
+    		log.debug "Putting into manual mode"
             theswitch.on()
             state.mode = "manual"
             state.offAt = -1
@@ -74,13 +76,16 @@ def pushed(evt) {
 }
 
 def startTimer(time) {
+    log.debug "Running for ${time} minutes"
     state.mode = "timed"
     state.offAt = now() + (60 * 1000 * time)
     runIn(60 * time, timerElapsed)
 }
 
 def timerElapsed() {
-    if ((state.mode == "timed") && (now() > state.offAt)) {
+    log.debug "timerElapsed - mode: ${state.mode}, offAt: ${state.offAt}, now: ${now()}"
+    if ((state.mode == "timed") && ((state.offAt - now()) < 10*1000)) {
+	    log.debug "turning off"
         state.mode = "off"
         theswitch.off()
     }
