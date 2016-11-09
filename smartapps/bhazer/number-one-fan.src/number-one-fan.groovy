@@ -43,9 +43,7 @@ def initialize() {
 
 def switchedOn(evt) {
     if (state.mode == "off") {
-        state.mode = "timed"
-        state.offAt = now() + (60 * 1000 * time1)
-        runIn(60 * time1, timerElapsed)
+        startTimer(time1)
     }
 }
 
@@ -54,13 +52,36 @@ def switchedOff(evt) {
     state.offAt = -1
 }
 
+def pushed(evt) {
+    switch (evt.data.buttonNumber) {
+        // double tab up
+        case "1":
+            theswitch.on()
+            startTimer(time2)
+            break
+
+        // hold up
+        case "5":
+            theswitch.on()
+            state.mode = "manual"
+            state.offAt = -1
+            break
+
+        // no big thang, some other unsupported gesture
+        default:
+            break
+    }
+}
+
+def startTimer(time) {
+    state.mode = "timed"
+    state.offAt = now() + (60 * 1000 * time)
+    runIn(60 * time, timerElapsed)
+}
+
 def timerElapsed() {
     if ((state.mode == "timed") && (now() > state.offAt)) {
         state.mode = "off"
         theswitch.off()
     }
-}
-
-def pushed(evt) {
-    // TODO: implement
 }
