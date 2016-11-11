@@ -33,17 +33,17 @@ private def getVersionLabel() { return "Ecobee (Connect) Version ${getVersionNum
 private def getHelperSmartApps() {
 	return [ 
     		[name: "ecobeeRoutinesChild", appName: "ecobee Routines",  
-            	namespace: "smartthings", multiple: true, 
+            	namespace: "StrykerSKS", multiple: true, 
                 title: "Create new Routines Handler..."], 
 			[name: "ecobeeContactsChild", appName: "ecobee Open Contacts",  
-            	namespace: "smartthings", multiple: true, 
+            	namespace: "StrykerSKS", multiple: true, 
                 title: "Create new Open Contacts SmartApp..."]                 
 			]
 }
  
 definition(
-	name: "Ecobee (Connect)",
-	namespace: "smartthings",
+	name: "Ecobee (S)",
+	namespace: "StrykerSKS",
 	author: "Sean Kendall Schneyer",
 	description: "Connect your Ecobee thermostat to SmartThings.",
 	category: "My Apps",
@@ -1968,7 +1968,7 @@ private def sendJsonRetry() {
     return sendJson(child, atomicState.savedActionJsonBody)
 }
 
-private def getChildThermostatName() { return "Ecobee Thermostat" }
+private def getChildThermostatName() { return "Ecobee Thermostat Stryker" }
 private def getChildSensorName()     { return "Ecobee Sensor" }
 private def getServerUrl()           { return "https://graph.api.smartthings.com" }
 private def getShardUrl()            { return getApiServerUrl() }

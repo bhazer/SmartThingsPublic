@@ -32,7 +32,7 @@ private def getVersionLabel() { return "Ecobee Thermostat Version ${getVersionNu
 
  
 metadata {
-	definition (name: "Ecobee Thermostat", namespace: "smartthings", author: "SmartThings") {
+	definition (name: "Ecobee Thermostat Stryker", namespace: "StrykerSKS", author: "StrykerSKS") {
 		capability "Actuator"
 		capability "Thermostat"
         capability "Sensor"
