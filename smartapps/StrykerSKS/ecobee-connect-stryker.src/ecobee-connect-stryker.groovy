@@ -42,7 +42,7 @@ private def getHelperSmartApps() {
 }
  
 definition(
-	name: "Ecobee (S)",
+	name: "Ecobee (Stryker)",
 	namespace: "StrykerSKS",
 	author: "Sean Kendall Schneyer",
 	description: "Connect your Ecobee thermostat to SmartThings.",
