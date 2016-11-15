@@ -20,6 +20,19 @@ preferences {
     }
 }
 
+mappings {
+    path("/humidity/up") {
+        action: [
+            POST: "humidityUp"
+        ]
+    }
+    path("/humidity/down") {
+        action: [
+            POST: "humidityDown"
+        ]
+    }
+}
+
 def installed() {
     log.debug "Installed with settings: ${settings}"
 
@@ -99,4 +112,25 @@ def timerElapsed() {
         state.mode = "off"
         theswitch.off()
     }
+}
+
+def humidityUp() {
+    log.debug "elevated humidity, current mode: ${state.mode}"
+    if (state.mode != "manual") {
+        log.debug "switching into humidity mode"
+        theswitch.on()
+        state.mode = "humidity"
+        state.offAt = -1
+    }
+    return [success: "true"]
+}
+
+def humidityDown() {
+    log.debug "humidity back to normal, current mode: ${state.mode}"
+    if (state.mode == "humidity") {
+        log.debug "turning off"
+        state.mode = "off"
+        theswitch.off()
+    }
+    return [success: "true"]
 }
