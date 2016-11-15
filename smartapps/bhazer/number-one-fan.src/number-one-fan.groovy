@@ -10,13 +10,17 @@ definition(
 
 
 preferences {
-    section("Switch") {
-        input "theswitch", "capability.switch", required: true
+    section("Devices") {
+        input "theswitch", "capability.switch", title: "Which fan switch?", required: true
+        input "sensor", "capability.relativeHumidityMeasurement", title: "Which humidity measurement?", required: true
     }
     section("Times") {
         input "time1", "number", title: "How long to stay on when switched on?", required: true
         input "time2", "number", title: "How long to stay on when double tapped?", required: true
         input "time3", "number", title: "How long to stay on when triple tapped?", required: true
+    }
+    section("Dew Point") {
+        input "maxDewPoint", "number", title: "Dew point to stay below? (in F)", required: true
     }
 }
 
@@ -53,6 +57,7 @@ def initialize() {
     subscribe(theswitch, "switch.on", switchedOn)
     subscribe(theswitch, "switch.off", switchedOff)
     subscribe(theswitch, "button.pushed", pushed)
+    subscribe(sensor, "humidity", humidityChanged)
 }
 
 def switchedOn(evt) {
@@ -113,6 +118,11 @@ def timerElapsed() {
         theswitch.off()
         state.offAt = -1
     }
+}
+
+def humidityChanged(evt) {
+    log.debug "humidityChanged, currentHumidity: ${sensor.currentHumidity}"
+    log.debug "   currentTemperature: ${sensor.currentTemperature}"
 }
 
 def humidityUp() {
