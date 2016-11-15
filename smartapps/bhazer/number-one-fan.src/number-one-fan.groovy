@@ -107,10 +107,11 @@ def startTimer(time) {
 
 def timerElapsed() {
     log.debug "timerElapsed - mode: ${state.mode}, offAt: ${state.offAt}, now: ${now()}"
-    if ((state.mode == "timed") && ((state.offAt - now()) < 10*1000)) {
+    if ((state.mode != "manual") && ((state.offAt - now()) < 10*1000)) {
 	    log.debug "turning off"
         state.mode = "off"
         theswitch.off()
+        state.offAt = -1
     }
 }
 
@@ -120,7 +121,7 @@ def humidityUp() {
         log.debug "switching into humidity mode"
         theswitch.on()
         state.mode = "humidity"
-        state.offAt = -1
+        state.offAt = now() + (60 * 1000 * 120) // max run 2 hours
     }
     return [success: "true"]
 }
@@ -131,6 +132,7 @@ def humidityDown() {
         log.debug "turning off"
         state.mode = "off"
         theswitch.off()
+        state.offAt = -1
     }
     return [success: "true"]
 }
