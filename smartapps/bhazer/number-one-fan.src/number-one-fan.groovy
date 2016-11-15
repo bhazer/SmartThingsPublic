@@ -57,7 +57,10 @@ def initialize() {
     subscribe(theswitch, "switch.on", switchedOn)
     subscribe(theswitch, "switch.off", switchedOff)
     subscribe(theswitch, "button.pushed", pushed)
-    subscribe(sensor, "humidity", humidityChanged)
+    subscribe(sensor, "humidity", sensorChanged)
+    subscribe(sensor, "temperature", sensorChanged)
+
+    checkDewPoint()
 }
 
 def switchedOn(evt) {
@@ -120,9 +123,23 @@ def timerElapsed() {
     }
 }
 
-def humidityChanged(evt) {
-    log.debug "humidityChanged, currentHumidity: ${sensor.currentHumidity}"
-    log.debug "   currentTemperature: ${sensor.currentTemperature}"
+def sensorChanged(evt) {
+    log.debug "sensorChanged"
+    checkDewPoint()
+}
+
+def checkDewPoint() {
+    log.debug "currentHumidity: ${sensor.currentHumidity}"
+    log.debug "currentTemperature: ${sensor.currentTemperature}"
+    def dewPoint = sensor.currentTemperature - 0.36*(100-sensor.currentHumidity)
+    log.debug "current dewPoint: ${dewPoint}"
+
+    if (dewPoint >= maxDewPoint) {
+        humidityUp()
+    }
+    else {
+        humidityDown()
+    }
 }
 
 def humidityUp() {
@@ -130,8 +147,10 @@ def humidityUp() {
     if (state.mode != "manual") {
         log.debug "switching into humidity mode"
         theswitch.on()
-        startTimer(120) // max run 2 hours
-        state.mode = "humidity"
+        if (state.mode != "humidity") {
+            startTimer(120) // max run 2 hours
+            state.mode = "humidity"
+        }
     }
     return [success: "true"]
 }
