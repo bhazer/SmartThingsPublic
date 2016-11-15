@@ -120,8 +120,8 @@ def humidityUp() {
     if (state.mode != "manual") {
         log.debug "switching into humidity mode"
         theswitch.on()
+        startTimer(120) // max run 2 hours
         state.mode = "humidity"
-        state.offAt = now() + (60 * 1000 * 120) // max run 2 hours
     }
     return [success: "true"]
 }
