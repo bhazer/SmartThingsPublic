@@ -73,7 +73,9 @@ def switchedOn(evt) {
 
 def switchedOff(evt) {
     log.debug "Switched off manually"
-    state.mode = "off"
+    if (state.mode != "humidityOverrun") {
+        state.mode = "off"
+    }
     state.offAt = -1
 }
 
@@ -147,7 +149,7 @@ def checkDewPoint() {
 
 def humidityUp() {
     log.debug "elevated humidity, current mode: ${state.mode}"
-    if (state.mode == "timer" || state.mode == "off") {
+    if (state.mode == "timed" || state.mode == "off") {
         log.debug "switching into humidity mode"
         theswitch.on()
         startTimer(maxHumidityTime)
