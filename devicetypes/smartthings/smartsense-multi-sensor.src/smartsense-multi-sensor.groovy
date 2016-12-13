@@ -161,7 +161,7 @@ private Map parseCatchAllMessage(String description) {
 				if (cluster.command == 0x07) {
 					if(cluster.data[0] == 0x00) {
 						log.debug "TEMP REPORTING CONFIG RESPONSE" + cluster
-						sendEvent(name: "checkInterval", value: 60 * 12, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+						resultMap = [name: "checkInterval", value: 60 * 12, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID]]
 					}
 					else {
 						log.warn "TEMP REPORTING CONFIG FAILED- error code:${cluster.data[0]}"
@@ -339,7 +339,7 @@ private Map getContactResult(value) {
 	log.debug "Contact: ${device.displayName} value = ${value}"
 	def descriptionText = value == 'open' ? '{{ device.displayName }} was opened' : '{{ device.displayName }} was closed'
 	sendEvent(name: 'contact', value: value, descriptionText: descriptionText, displayed: false, translatable: true)
-	sendEvent(name: 'status', value: value, descriptionText: descriptionText, translatable: true)
+	return [name: 'status', value: value, descriptionText: descriptionText, translatable: true]
 }
 
 private getAccelerationResult(numValue) {
@@ -400,9 +400,9 @@ def refresh() {
 }
 
 def configure() {
-	// Device-Watch allows 3 check-in misses from device (plus 1 min lag time)
+	// Device-Watch allows 2 check-in misses from device + ping (plus 1 min lag time)
 	// enrolls with default periodic reporting until newer 5 min interval is confirmed
-	sendEvent(name: "checkInterval", value: 3 * 60 * 60 + 1 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
+	sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 1 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID])
 
 	log.debug "Configuring Reporting"
 
